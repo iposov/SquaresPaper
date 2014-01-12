@@ -20,8 +20,10 @@ public class CreatePaper {
         PageDrawer[] drawers = {
                 new SquaresPage(),
                 new TrianglesPage(),
-                new HexagonsPageDrawer(),
-                new RhombusPage()
+                new RhombusPage(),
+                new HexagonsPage(),
+                new HexagonsPage(HexagonsPage.TRIANGLES_MAIN),
+                new HexagonsPage(HexagonsPage.TRIANGLES_SECONDARY)
         };
 
         for (PageDrawer drawer : drawers)
