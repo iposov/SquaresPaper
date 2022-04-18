@@ -7,6 +7,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +19,7 @@ import java.io.FileOutputStream;
  */
 public class CreatePaper {
 
-    public static void main(String[] args) throws FileNotFoundException, DocumentException {
+    public static void main(String[] args) throws IOException, DocumentException {
         PageDrawer[] drawers = {
                 new SquaresPage(),
                 new TrianglesPage(),
@@ -28,16 +31,22 @@ public class CreatePaper {
 
         for (PageDrawer drawer : drawers)
             for (int mm = 1; mm <= 6; mm++)
-                for (int gray = 0x88; gray <= 0x88; gray += 0x22)
+                for (int gray = 0x00; gray <= 0xBB; gray += 0x44)
                     createPaper(mm, gray, drawer);
     }
 
-    private static void createPaper(int mms, int gray, PageDrawer drawer) throws DocumentException, FileNotFoundException {
+    private static void createPaper(int mms, int gray, PageDrawer drawer) throws DocumentException, IOException {
         Rectangle pageSize = new Rectangle(
                 Utilities.millimetersToPoints(210), Utilities.millimetersToPoints(297)
         );
         Document doc = new Document(pageSize, 0, 0, 0, 0);
-        PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(drawer.getId() + "-" + mms + "mm-" + Integer.toHexString(gray) + ".pdf"));
+
+        Path outputFolder = Path.of("pdfs");
+        String fileName = String.format("%s-%dmm-%02Xgray.pdf", drawer.getId(), mms, gray);
+        Path outputFile = outputFolder.resolve(fileName);
+
+        Files.createDirectories(outputFolder);
+        PdfWriter writer = PdfWriter.getInstance(doc, new FileOutputStream(outputFile.toFile()));
 
         doc.open();
 
